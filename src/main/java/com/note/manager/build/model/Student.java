@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class Student implements Serializable{
-    private Long id;
+    private long id;
     private String firstName;
     private String lastName;
     private String ref;
@@ -21,6 +21,6 @@ public class Student implements Serializable{
     private String phone;
     private LocalDate birthdate;
     private LocalDateTime creationDate;
-    private Long classId;
-    private Long GroupId;
+    private long classId;
+    private long GroupId;
 }
