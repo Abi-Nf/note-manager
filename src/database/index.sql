@@ -15,7 +15,7 @@ create table "student"(
     ref varchar(30) not null,
     email text,
     phone varchar(45),
-    birthdate date check(extract(year from age(birthdate,current_date)) > 10),
+    birthdate date check(extract(year from age(current_date,birthdate)) > 10),
     creation_date timestamp,
     classId int references "class"(id),
     GroupId int references "group"(id)
@@ -28,9 +28,10 @@ create table "subject"(
 );
 
 create table "note"(
-     id serial primary key,
-     value double precision default 0 check(value >= 0),
-     subjectId int references subject(id),
-     studentId int references student(id),
-     evaluationDate timestamp
+   id serial primary key,
+   value double precision default 0 check(value >= 0),
+   subjectId int references subject(id),
+   studentId int references student(id),
+   evaluationDate timestamp,
+   hasBonus double precision default 0
 );

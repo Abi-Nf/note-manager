@@ -21,4 +21,6 @@ public class Student implements Serializable{
     private String phone;
     private LocalDate birthdate;
     private LocalDateTime creationDate;
+    private Long classId;
+    private Long GroupId;
 }

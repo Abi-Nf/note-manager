@@ -8,14 +8,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/students")
-public class StudentsController {
+public class StudentController {
     private StudentService studentService;
 
     @GetMapping("/{std}")
     public List<Student> findStudentByRef(
             @PathVariable(required = false) String std
     ){
-        return studentService.getAllStudents();
+        return null;
     }
 
     @PostMapping

@@ -1,0 +1,19 @@
+openapi: "3.0.3"
+info:
+  title: API exercise
+  description: This is an API specification that we do at HEI
+  version: 1.0.0
+  contact:
+    name: "RALAIVAO Abigail Ny Fiderana"
+    url: "https://"
+    email: "hei.abigail.3@gmail.com"
+servers:
+  - url: "https://STD22078"
+paths:
+  /:
+    get:
+      summary:
+      operationId:
+      parameters:
+        -
+      responses:
