@@ -1,13 +1,16 @@
 package com.note.manager.build.services;
 
+import com.note.manager.build.Utils.ErrorMessage;
 import com.note.manager.build.model.Group;
 import com.note.manager.build.repository.GroupRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +22,7 @@ public class GroupService {
         this.groupRepository = groupRepository;
     }
 
-    public List<Group> findAll() throws SQLException {
+    public List<Group> findAll() {
         List<Group> groups = new ArrayList<>();
         try(PreparedStatement statement = groupRepository.findAll()) {
             ResultSet resultSet = statement.executeQuery();
@@ -37,11 +40,12 @@ public class GroupService {
     }
 
     public Optional<Group> findByName(String name) {
-        try(ResultSet resultSet = groupRepository.findByName(name).executeQuery()){
+        try(PreparedStatement statement = groupRepository.findByName(name)){
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Group group = new Group();
+                group.setId(resultSet.getLong("id"));
                 group.setName(resultSet.getString("name"));
-                // Set other properties of group from resultSet here
                 return Optional.of(group);
             }
         }catch (SQLException error){
@@ -50,30 +54,51 @@ public class GroupService {
         return Optional.empty();
     }
 
-    public Group saveGroup(Group group) throws SQLException {
-        int rowsAffected = groupRepository.saveGroup(group).executeUpdate();
-        if (rowsAffected > 0) {
-            return group;
-        } else {
-            throw new SQLException("Failed to save group");
+    public Object saveGroup(Group group) {
+        try(PreparedStatement statement = groupRepository.saveGroup(group)) {
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                return group;
+            }
+        }catch (SQLException error){
+            System.out.println(error.getMessage());
         }
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                "Error on insert group",
+                group
+        );
     }
 
-    public Group updateGroupByName(String oldName, String newName) throws SQLException {
-        int rowsAffected = groupRepository.updateGroupByName(oldName, newName).executeUpdate();
-        if (rowsAffected > 0) {
-            Group group = new Group();
-            group.setName(newName);
-            return group;
-        } else {
-            throw new SQLException("Failed to update group");
+    public Optional<HashMap<String,String>> updateGroupByName(String oldName, String newName) {
+        try(PreparedStatement statement = groupRepository.updateGroupByName(oldName, newName)) {
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                HashMap<String,String> group = new HashMap<>();
+                group.put("name",newName);
+                return Optional.of(group);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        return Optional.empty();
     }
 
-    public void deleteGroupByName(String name) throws SQLException {
-        int rowsAffected = groupRepository.deleteGroupByName(name).executeUpdate();
-        if (rowsAffected == 0) {
-            throw new SQLException("Failed to delete group");
+    public Object deleteGroupByName(String name) {
+        try(PreparedStatement statement = groupRepository.deleteGroupByName(name)) {
+            int rowsAffected = statement .executeUpdate();
+            if (rowsAffected > 0) {
+                HashMap<String,String> group = new HashMap<>();
+                group.put("name",name);
+                return Optional.of(group);
+            }
+        }catch (SQLException error){
+            throw new RuntimeException(error);
         }
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                "Error on delete group",
+                name
+        );
     }
 }
