@@ -9,7 +9,7 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class Subject {
-    private Long id;
+    private long id;
     private String name;
     private String description;
 }

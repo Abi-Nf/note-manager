@@ -33,9 +33,7 @@ public class StudentController {
             HttpServletResponse response
     ){
         Optional<Student> result = this.studentService.saveStudent(student);
-        if (result.isPresent()) {
-            return result;
-        }
+        if (result.isPresent()) return result;
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return new ErrorMessage(
@@ -46,7 +44,9 @@ public class StudentController {
     }
 
     @PutMapping
-    public void updateStudent(){}
+    public Student updateStudentByRef(){
+        return null;
+    }
 
     @DeleteMapping
     public void deleteStudentByRef(){}

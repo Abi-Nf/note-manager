@@ -9,6 +9,6 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 public class Class {
-    private Long id;
-    private Long name;
+    private long id;
+    private String name;
 }

@@ -2,7 +2,6 @@ package com.note.manager.build.model;
 
 import lombok.*;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class Student implements Serializable{
+public class Student{
     private long id;
     private String firstName;
     private String lastName;

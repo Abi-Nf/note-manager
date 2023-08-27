@@ -30,7 +30,6 @@ public class NoteService {
             if(result > 0){
                 return Optional.of(note);
             }
-            System.out.println("result :"+result);
         } catch (SQLException e){
             return Optional.empty();
         }
@@ -39,14 +38,14 @@ public class NoteService {
 
     public Optional<HashMap<Integer,Double>> UpdateNoteById(int id, double value){
         try {
-            HashMap<Integer,Double> Note = new HashMap<>();
+            HashMap<Integer,Double> note = new HashMap<>();
 
             PreparedStatement statement = repository.UpdateNoteById(id, value);
             boolean isUpdated = statement.executeQuery().rowUpdated();
 
             if(isUpdated){
-                Note.put(id, value);
-                return Optional.of(Note);
+                note.put(id, value);
+                return Optional.of(note);
             }
         }catch (SQLException error){
             System.out.println(error.getMessage());
