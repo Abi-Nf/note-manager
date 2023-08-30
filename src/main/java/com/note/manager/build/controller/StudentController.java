@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,10 +20,15 @@ public class StudentController {
     }
 
     @GetMapping("/{std}")
-    public List<Student> findStudentByRef(
-            @PathVariable(required = false) String std
+    public Optional<Student> findStudentByRef(
+            @PathVariable(required = false) String std,
+            HttpServletResponse response
     ){
-        return null;
+        Optional<Student> student = this.studentService.findByRef(std);
+        if(student.isEmpty()) response.setStatus(
+                HttpStatus.NO_CONTENT.value()
+        );
+        return student;
     }
 
     @PostMapping
@@ -43,12 +47,29 @@ public class StudentController {
         );
     }
 
-    @PutMapping
-    public Student updateStudentByRef(){
-        return null;
+    @PutMapping("/{ref}")
+    public Optional<Student> updateStudentByRef(
+            @PathVariable String ref,
+            @RequestBody Student student,
+            HttpServletResponse response
+    ){
+        Optional<Student> optional = this.studentService.updateByRef(ref, student);
+        if (optional.isEmpty()) response.setStatus(
+            HttpStatus.NO_CONTENT.value()
+        );
+        return optional;
     }
 
-    @DeleteMapping
-    public void deleteStudentByRef(){}
+    @DeleteMapping("/{ref}")
+    public Optional<Student> deleteStudentByRef(
+            @PathVariable String ref,
+            HttpServletResponse response
+    ){
+        Optional<Student> student = this.studentService.deleteByRef(ref);
+        if(student.isEmpty()) response.setStatus(
+                HttpStatus.NO_CONTENT.value()
+        );
+        return student;
+    }
 
 }

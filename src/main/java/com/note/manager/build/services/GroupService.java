@@ -6,6 +6,7 @@ import com.note.manager.build.repository.GroupRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,8 +19,8 @@ import java.util.Optional;
 public class GroupService {
     private final GroupRepository groupRepository;
 
-    public GroupService(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository;
+    public GroupService(Connection connection) {
+        this.groupRepository = new GroupRepository(connection);
     }
 
     public List<Group> findAll() {
@@ -57,9 +58,7 @@ public class GroupService {
     public Object saveGroup(Group group) {
         try(PreparedStatement statement = groupRepository.saveGroup(group)) {
             int rowsAffected = statement.executeUpdate();
-            if (rowsAffected > 0) {
-                return group;
-            }
+            if (rowsAffected > 0) return group;
         }catch (SQLException error){
             System.out.println(error.getMessage());
         }
@@ -79,26 +78,24 @@ public class GroupService {
                 return Optional.of(group);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
         return Optional.empty();
     }
 
     public Object deleteGroupByName(String name) {
+        HashMap<String,String> group = new HashMap<>();
+        group.put("name",name);
         try(PreparedStatement statement = groupRepository.deleteGroupByName(name)) {
             int rowsAffected = statement .executeUpdate();
-            if (rowsAffected > 0) {
-                HashMap<String,String> group = new HashMap<>();
-                group.put("name",name);
-                return Optional.of(group);
-            }
+            if (rowsAffected > 0) return group;
         }catch (SQLException error){
-            throw new RuntimeException(error);
+            System.out.println(error.getMessage());
         }
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 "Error on delete group",
-                name
+                group
         );
     }
 }

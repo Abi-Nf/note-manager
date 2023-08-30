@@ -24,10 +24,10 @@ public class GroupRepository {
 
     public PreparedStatement findByName(String name) throws SQLException {
         String sql = """
-        select * from "group" where name = ?
+        select * from "group" where name ilike ?
         """;
         PreparedStatement statement = this.connection.prepareStatement(sql);
-        statement.setString(1,name);
+        statement.setString(1,'%'+name+'%');
 
         return statement;
     }

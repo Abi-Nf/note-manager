@@ -18,9 +18,15 @@ public class NoteRepository {
 
     public PreparedStatement findAll() throws SQLException {
         String sql = """
-            SELECT *, sub.id as subid, s.id as sid FROM note
+            SELECT
+                *, sub.id as subid, s.id as sid,
+                c.id as classid, c.name as classname,
+                g.id as groupid, g.name as groupname
+            FROM note
             INNER JOIN student s on s.id = note.studentid
             Inner Join subject sub on sub.id = note.subjectid
+            inner join "group" g on g.id = s.groupid
+            inner join class c on c.id = s.classid
             """;
         return connection.prepareStatement(sql);
     }

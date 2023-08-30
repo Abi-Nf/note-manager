@@ -1,5 +1,6 @@
 package com.note.manager.build.services;
 
+import com.note.manager.build.Utils.StudentParser;
 import com.note.manager.build.model.Note;
 import com.note.manager.build.model.Student;
 import com.note.manager.build.model.Subject;
@@ -37,12 +38,9 @@ public class NoteService {
     }
 
     public Optional<HashMap<Integer,Double>> UpdateNoteById(int id, double value){
-        try {
+        try(PreparedStatement statement = repository.UpdateNoteById(id, value)) {
             HashMap<Integer,Double> note = new HashMap<>();
-
-            PreparedStatement statement = repository.UpdateNoteById(id, value);
             boolean isUpdated = statement.executeQuery().rowUpdated();
-
             if(isUpdated){
                 note.put(id, value);
                 return Optional.of(note);
@@ -54,13 +52,9 @@ public class NoteService {
     }
 
     public String DeleteNoteById(int id) {
-        try {
-            boolean result;
-            try (PreparedStatement statement = this.repository.DeleteById(id)) {
-                result = statement.executeQuery().rowDeleted();
-            }
-            if(result){
-                return String.format("Note on id: %s deleted",id);
+        try(PreparedStatement statement = this.repository.DeleteById(id)) {
+            boolean result = statement.executeUpdate() > 0;
+            if(result){ return String.format("Note on id: %s deleted",id);
             }
         }catch (SQLException error){
             System.out.println(error.getMessage());
@@ -70,14 +64,13 @@ public class NoteService {
 
 
     public List<Note> findBySubject(String subject) {
-        try {
-            List<Note> noteList = new ArrayList<>();
-            PreparedStatement query = repository.findBySubject(subject);
-            return getNotes(noteList, query);
+        List<Note> noteList = new ArrayList<>();
+        try(PreparedStatement statement = repository.findBySubject(subject)) {
+            return getNotes(noteList, statement);
         }catch (SQLException error){
             System.out.println(error.getMessage());
-            return new ArrayList<>();
         }
+        return noteList;
     }
 
     public List<Note> findByStudentName(String student){
@@ -111,20 +104,7 @@ public class NoteService {
                     result.getString("name"),
                     result.getString("description")
             );
-
-            Student student = new Student(
-                    result.getLong("sid"),
-                    result.getString("firstName"),
-                    result.getString("lastName"),
-                    result.getString("ref"),
-                    result.getString("email"),
-                    result.getString("phone"),
-                    result.getDate("birthdate").toLocalDate(),
-                    result.getTimestamp("creation_date").toLocalDateTime(),
-                    result.getLong("classId"),
-                    result.getLong("GroupId")
-            );
-
+            Student student = StudentParser.parseStudentResultSet(result);
             Note note = new Note(
                     result.getInt("id"),
                     result.getDouble("value"),

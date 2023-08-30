@@ -6,6 +6,7 @@ import com.note.manager.build.repository.ClassRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +18,10 @@ import java.util.Optional;
 @Service
 public class ClassService {
     ClassRepository repository;
+
+    public ClassService(Connection connection){
+        this.repository = new ClassRepository(connection);
+    }
 
     public List<Class> findAll(){
         List<Class> classList = new ArrayList<>();
@@ -30,7 +35,7 @@ public class ClassService {
                 classList.add(aClass);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
         return classList;
     }
@@ -47,7 +52,7 @@ public class ClassService {
                 );
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
         return Optional.empty();
     }
@@ -57,7 +62,7 @@ public class ClassService {
             int insertRow = statement.executeUpdate();
             if (insertRow > 0) return aClass;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
 
         return new ErrorMessage(
@@ -77,9 +82,7 @@ public class ClassService {
                 .updateClassNameByOldName(oldName,newName)
         ) {
             boolean result = statement.executeUpdate() > 0;
-            if (result){
-                return updates;
-            }
+            if (result) return updates;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -91,17 +94,16 @@ public class ClassService {
     }
 
     public Object deleteByName(String name){
+        String message = "";
         try(PreparedStatement statement = this.repository.deleteByName(name)) {
             boolean isDeleted = statement.executeUpdate() > 0;
-            if (isDeleted){
-                return String.format("class: %s deleted successfully",name);
-            }
+            if (isDeleted) return String.format("class: %s deleted successfully",name);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            message = e.getMessage();
         }
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
-                "missing name of class to delete",
+                message,
                 name
         );
     }

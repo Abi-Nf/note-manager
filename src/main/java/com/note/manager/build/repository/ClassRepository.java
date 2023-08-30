@@ -57,7 +57,7 @@ public class ClassRepository {
 
     public PreparedStatement deleteByName(String name) throws SQLException {
         String sql = """
-        delete from class where name ilike ?
+        delete from class where class.name ilike ?
         """;
         PreparedStatement statement = this.connection.prepareStatement(sql);
         statement.setString(1,'%'+name+'%');

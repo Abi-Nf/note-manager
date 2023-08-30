@@ -39,7 +39,7 @@ public class StudentRepository {
         return prepared;
     }
 
-    public PreparedStatement updateStudentById(long id, Student student) throws SQLException {
+    public PreparedStatement updateStudentByRef(String ref, Student student) throws SQLException {
         String sql = """
         update student
             set firstname = ?,
@@ -50,19 +50,21 @@ public class StudentRepository {
             birthdate = ?,
             classid = ?,
             groupid = ?
-        where id = ?
+        where ref ilike ?
         """;
         PreparedStatement statement = prepareStatement(student, sql);
         statement.setLong(7,student.getClassId());
         statement.setLong(8,student.getGroupId());
-        statement.setLong(9,id);
+        statement.setString(9,'%'+ref+'%');
 
         return statement;
     }
 
     public PreparedStatement findAll() throws SQLException {
         String sql = """
-        select *, c.id as class_id, g.id as group_id from student
+        select
+            *, c.id as class_id, c.name as classname, g.id as group_id, g.name as groupname
+        from student
         inner join "group" g on g.id = student.groupid
         inner join class c on c.id = student.classid
         """;
@@ -71,7 +73,9 @@ public class StudentRepository {
 
     public PreparedStatement findByRef(String ref) throws SQLException {
         String sql = """
-        select *, c.id as class_id, g.id as group_id from student
+        select
+            *, c.id as class_id, c.name as classname, g.id as group_id, g.name as groupname
+        from student
         inner join "group" g on g.id = student.groupid
         inner join class c on c.id = student.classid
         where student.ref = ?

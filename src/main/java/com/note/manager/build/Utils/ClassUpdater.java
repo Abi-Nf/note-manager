@@ -8,8 +8,7 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorMessage{
-    private int status;
-    private String message;
-    private Object object;
+public class ClassUpdater{
+    private String oldName;
+    private String newName;
 }

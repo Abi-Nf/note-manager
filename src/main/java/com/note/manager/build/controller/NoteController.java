@@ -6,7 +6,6 @@ import com.note.manager.build.model.Note;
 import com.note.manager.build.services.NoteService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
@@ -15,14 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(
-        value = "/note",
-        consumes = {
-                MediaType.APPLICATION_JSON_VALUE,
-                MediaType.MULTIPART_FORM_DATA_VALUE,
-                MediaType.APPLICATION_FORM_URLENCODED_VALUE
-        }
-)
+@RequestMapping("/note")
 public class NoteController {
     NoteService noteService;
 

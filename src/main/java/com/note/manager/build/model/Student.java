@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class Student{
     private long id;
     private String firstName;
@@ -20,6 +21,9 @@ public class Student{
     private String phone;
     private LocalDate birthdate;
     private LocalDateTime creationDate;
+    private Class aClass;
+    private Group group;
+
     private long classId;
     private long GroupId;
 }
