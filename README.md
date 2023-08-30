@@ -32,14 +32,5 @@ export PSQL_PASS="your postgresql password"
 
 Unfortunately, models won't be updated or created by magics.
 
-```shell
-manager --init
-```
-
-### Mock data
-
-if you need mock data, there is just one command to execute
-
-```shell
-manager --push
-```
+Database initialisation is [here](./src/database/index.sql)
+Mock data is [here](./src/database/mock/index.sql)

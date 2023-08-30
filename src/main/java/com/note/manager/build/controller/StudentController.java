@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,7 +22,7 @@ public class StudentController {
 
     @GetMapping("/{std}")
     public Optional<Student> findStudentByRef(
-            @PathVariable(required = false) String std,
+            @PathVariable String std,
             HttpServletResponse response
     ){
         Optional<Student> student = this.studentService.findByRef(std);
@@ -29,6 +30,11 @@ public class StudentController {
                 HttpStatus.NO_CONTENT.value()
         );
         return student;
+    }
+
+    @GetMapping
+    public List<Student> findALl(){
+        return this.studentService.findAll();
     }
 
     @PostMapping
