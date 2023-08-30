@@ -34,3 +34,7 @@ Unfortunately, models won't be updated or created by magics.
 
 Database initialisation is [here](./src/database/index.sql)
 Mock data is [here](./src/database/mock/index.sql)
+
+### video (explaining)
+
+the video is ![here](https://drive.google.com/file/d/1LpiAF98GHSmw3CRjycD9hNqmhoexSZqJ/view?usp=drive_link);
